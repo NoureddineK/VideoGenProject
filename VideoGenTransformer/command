@@ -1,0 +1,17 @@
+Automatically generating the input file 
+for f in ./*.mp4; do echo "file '$f'" >> mylist.txt; done
+Or : 
+ffmpeg -f concat -safe 0 -i <(for f in ./*.mp4; do echo "file '$PWD/$f'"; done) -c copy output.wav
+
+generate mp4 file from file.txt
+ffmpeg -f concat -safe 0 -i myPlayList.txt -c copy concat.mp4
+
+get duration (Seconde): 
+ffprobe -v error -show_entries format=duration \
+  -of default=noprint_wrappers=1:nokey=1 input.mp4
+
+generate icone:
+ffmpeg -y -i v31.mp4 -r 1 -t 00:00:01 -ss 00:00:01 -f image2 v31Image.png
+
+
+
