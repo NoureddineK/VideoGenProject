@@ -4,11 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.eclipse.emf.common.util.URI;
-import org.junit.Test;
 
 import fr.istic.videoGen.AlternativesMedia;
 import fr.istic.videoGen.ImageDescription;
@@ -20,6 +17,7 @@ import fr.istic.videoGen.VideoDescription;
 import fr.istic.videoGen.VideoGeneratorModel;
 
 public class VideoGenTest1 {
+
 
 	public void testInJava1() {
 
@@ -138,10 +136,9 @@ public class VideoGenTest1 {
 		for (List<String> l : v.listVariants(op_combinaisons, alt, man) )
 			System.out.println(l);
 	}
-
-
-
+    
+	
+	
 }
-
 
 

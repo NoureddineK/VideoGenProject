@@ -14,16 +14,43 @@ class VideoGenTest1XtendVersion {
 
 	def echo(String file, int i) {
 		var print = Runtime.runtime.exec(
-			"echo \"file " + file + "\" >> git/teaching-MDE-IL1819/VideoGenTransformer/mylist" + i + ".txt"
-		);
+			"echo \"file " + file + "\" >> mylist" + i + ".txt");
 		print.waitFor;
 		println("echo \"file " + file + "\">> mylist" + i + ".txt");
 	}
 
+@Test
+def void test1(){
+
+	val char[] arr = #["A", "B", "C", "D"];
+	possibleStrings(5, arr, "");
+}
+
+def possibleStrings(int maxLength, char[] alphabet, String curr) throws Exception{
+
+        // If the current string has reached it's maximum length
+        if(curr.length() == maxLength) {
+            System.out.println(curr);
+
+        // Else add each letter from the alphabet to new strings and process these new strings again
+        } else {
+            for(var i = 0; i < alphabet.length; i++) {
+                var oldCurr = curr;
+                   System.out.println("Old: "+curr); 
+                curr.concat(alphabet.get(i).toString);
+                  System.out.println("i: "+curr);       
+                possibleStrings(maxLength,alphabet,curr);
+                curr.replace(curr,oldCurr.toString);
+                  System.out.println("replace: "+curr);             
+                
+            }
+        }
+    }
+
 	@Test
 	def void testLoadModel() {
 		var cmd = "echo \"file '";
-		var file = "'\" >> git/teaching-MDE-IL1819/VideoGenTransformer/mylist";
+		var file = "'\" >> mylist";
 		var txt = ".txt";
 		var mon = "";
 		var opt = "";
@@ -59,15 +86,17 @@ class VideoGenTest1XtendVersion {
 							if (mediaDesc instanceof VideoDescription) {
 								// println(mediaDesc.location);
 								// echo(mediaDesc.location, i);
-								println(mon);
-								var print = Runtime.runtime.exec(mon);
+								println("AlternativesMedia: "+mon);
+								var printCmd = Runtime.runtime.exec(mon);
 								if (opt != "") {
-									println(opt);
-									print = Runtime.runtime.exec(opt);
+									println("opt: "+opt);
+									printCmd = Runtime.runtime.exec(opt);
 								}
-								println(cmd + mediaDesc.location + file + i + txt);
-								print = Runtime.runtime.exec(cmd + mediaDesc.location + file + i + txt);
-								print.waitFor;
+								println("VideoDescription: " + cmd + mediaDesc.location + file + i + txt);
+
+								//println(cmd + mediaDesc.location + file + i + txt);
+								printCmd = Runtime.runtime.exec(cmd + mediaDesc.location + file + i + txt);
+								printCmd.waitFor;
 								i++;
 							} else {
 								if (mediaDesc instanceof ImageDescription) {
@@ -77,14 +106,15 @@ class VideoGenTest1XtendVersion {
 									// print.waitFor;
 									println(mon);
 									if (opt != "") {
-										println(opt);
+										println("opt Image: "+opt);
 										print = Runtime.runtime.exec(opt);
 									}
-									println(cmd + mediaDesc.location + file + i + txt);
-									var print = Runtime.runtime.exec(mon);
-									print = Runtime.runtime.exec(opt);
-									print = Runtime.runtime.exec(cmd + mediaDesc.location + file + i + txt);
-									print.waitFor;
+									println("ImageDescription: "+cmd + mediaDesc.location + file + i + txt);
+
+									var printCmd = Runtime.runtime.exec(mon);
+									printCmd = Runtime.runtime.exec(opt);
+									printCmd = Runtime.runtime.exec(cmd + mediaDesc.location + file + i + txt);
+									printCmd.waitFor;
 									i++;
 								}
 							}

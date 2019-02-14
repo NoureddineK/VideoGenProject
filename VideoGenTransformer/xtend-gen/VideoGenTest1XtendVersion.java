@@ -21,7 +21,7 @@ public class VideoGenTest1XtendVersion {
       String _xblockexpression = null;
       {
         Process print = Runtime.getRuntime().exec(
-          (((("echo \"file " + file) + "\" >> git/teaching-MDE-IL1819/VideoGenTransformer/mylist") + Integer.valueOf(i)) + ".txt"));
+          (((("echo \"file " + file) + "\" >> mylist") + Integer.valueOf(i)) + ".txt"));
         print.waitFor();
         _xblockexpression = InputOutput.<String>println((((("echo \"file " + file) + "\">> mylist") + Integer.valueOf(i)) + ".txt"));
       }
@@ -32,10 +32,40 @@ public class VideoGenTest1XtendVersion {
   }
   
   @Test
+  public void test1() {
+    try {
+      final char[] arr = { 'A', 'B', 'C', 'D' };
+      this.possibleStrings(5, arr, "");
+    } catch (Throwable _e) {
+      throw Exceptions.sneakyThrow(_e);
+    }
+  }
+  
+  public void possibleStrings(final int maxLength, final char[] alphabet, final String curr) throws Exception {
+    int _length = curr.length();
+    boolean _equals = (_length == maxLength);
+    if (_equals) {
+      System.out.println(curr);
+    } else {
+      for (int i = 0; (i < alphabet.length); i++) {
+        {
+          String oldCurr = curr;
+          System.out.println(("Old: " + curr));
+          curr.concat(Character.valueOf(alphabet[i]).toString());
+          System.out.println(("i: " + curr));
+          this.possibleStrings(maxLength, alphabet, curr);
+          curr.replace(curr, oldCurr.toString());
+          System.out.println(("replace: " + curr));
+        }
+      }
+    }
+  }
+  
+  @Test
   public void testLoadModel() {
     try {
       String cmd = "echo \"file \'";
-      String file = "\'\" >> git/teaching-MDE-IL1819/VideoGenTransformer/mylist";
+      String file = "\'\" >> mylist";
       String txt = ".txt";
       String mon = "";
       String opt = "";
@@ -69,15 +99,15 @@ public class VideoGenTest1XtendVersion {
               EList<MediaDescription> _medias_1 = ((AlternativesMedia)media).getMedias();
               for (final MediaDescription mediaDesc : _medias_1) {
                 if ((mediaDesc instanceof VideoDescription)) {
-                  InputOutput.<String>println(mon);
-                  Process print = Runtime.getRuntime().exec(mon);
+                  InputOutput.<String>println(("AlternativesMedia: " + mon));
+                  Process printCmd = Runtime.getRuntime().exec(mon);
                   boolean _notEquals = (!Objects.equal(opt, ""));
                   if (_notEquals) {
-                    InputOutput.<String>println(opt);
-                    print = Runtime.getRuntime().exec(opt);
+                    InputOutput.<String>println(("opt: " + opt));
+                    printCmd = Runtime.getRuntime().exec(opt);
                   }
                   String _location_2 = ((VideoDescription)mediaDesc).getLocation();
-                  String _plus_8 = (cmd + _location_2);
+                  String _plus_8 = (("VideoDescription: " + cmd) + _location_2);
                   String _plus_9 = (_plus_8 + file);
                   String _plus_10 = (_plus_9 + Integer.valueOf(i));
                   String _plus_11 = (_plus_10 + txt);
@@ -88,33 +118,33 @@ public class VideoGenTest1XtendVersion {
                   String _plus_13 = (_plus_12 + file);
                   String _plus_14 = (_plus_13 + Integer.valueOf(i));
                   String _plus_15 = (_plus_14 + txt);
-                  print = _runtime.exec(_plus_15);
-                  print.waitFor();
+                  printCmd = _runtime.exec(_plus_15);
+                  printCmd.waitFor();
                   i++;
                 } else {
                   if ((mediaDesc instanceof ImageDescription)) {
                     InputOutput.<String>println(mon);
                     boolean _notEquals_1 = (!Objects.equal(opt, ""));
                     if (_notEquals_1) {
-                      InputOutput.<String>println(opt);
+                      InputOutput.<String>println(("opt Image: " + opt));
                       InputOutput.print(Runtime.getRuntime().exec(opt));
                     }
                     String _location_4 = ((ImageDescription)mediaDesc).getLocation();
-                    String _plus_16 = (cmd + _location_4);
+                    String _plus_16 = (("ImageDescription: " + cmd) + _location_4);
                     String _plus_17 = (_plus_16 + file);
                     String _plus_18 = (_plus_17 + Integer.valueOf(i));
                     String _plus_19 = (_plus_18 + txt);
                     InputOutput.<String>println(_plus_19);
-                    Process print_1 = Runtime.getRuntime().exec(mon);
-                    print_1 = Runtime.getRuntime().exec(opt);
+                    Process printCmd_1 = Runtime.getRuntime().exec(mon);
+                    printCmd_1 = Runtime.getRuntime().exec(opt);
                     Runtime _runtime_1 = Runtime.getRuntime();
                     String _location_5 = ((ImageDescription)mediaDesc).getLocation();
                     String _plus_20 = (cmd + _location_5);
                     String _plus_21 = (_plus_20 + file);
                     String _plus_22 = (_plus_21 + Integer.valueOf(i));
                     String _plus_23 = (_plus_22 + txt);
-                    print_1 = _runtime_1.exec(_plus_23);
-                    print_1.waitFor();
+                    printCmd_1 = _runtime_1.exec(_plus_23);
+                    printCmd_1.waitFor();
                     i++;
                   }
                 }
