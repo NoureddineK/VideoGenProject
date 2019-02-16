@@ -1,0 +1,3 @@
+file '/home/noureddine/git/VideoGenProject/VideoGenTransformer/playList/Videos/mandatory1.mp4'
+file '/home/noureddine/git/VideoGenProject/VideoGenTransformer/playList/Videos/mandatory2.mp4'
+file '/home/noureddine/git/VideoGenProject/VideoGenTransformer/playList/Videos/alter2.mp4'

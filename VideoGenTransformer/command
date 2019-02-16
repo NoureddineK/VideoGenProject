@@ -9,8 +9,7 @@ ffmpeg -safe 0 -f concat -segment_time_metadata 1 -i file.txt -vf
  select=concatdec_select -af aselect=concatdec_select,aresample=async=1 out.mp4
 
 get duration (Seconde): 
-ffprobe -v error -show_entries format=duration \
-  -of default=noprint_wrappers=1:nokey=1 input.mp4
+ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 input.mp4
 
 generate icone:
 ffmpeg -y -i v31.mp4 -r 1 -t 00:00:01 -ss 00:00:01 -f image2 v31Image.png
