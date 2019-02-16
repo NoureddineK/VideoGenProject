@@ -22,6 +22,10 @@ import fr.istic.videoGen.VideoGeneratorModel;
 public class VideoGenTest1 {
 
 
+	/**
+	 * Fonction qui calcule toutes les variantes possibles a partir de la grammaire videogen
+	 * @return une liste de listes de variates  
+	 */
 	public List<List<String>> genVariantesFromVideoGeneratorModel() {
 
 		VideoGeneratorModel videoGen = new VideoGenHelper().loadVideoGenerator(URI.createURI("example1.videogen"));
@@ -38,11 +42,11 @@ public class VideoGenTest1 {
 				MandatoryMedia mandatoryMed = (MandatoryMedia) m;
 				if(mandatoryMed.getDescription() instanceof ImageDescription){
 					ImageDescription imDesc = (ImageDescription) mandatoryMed.getDescription() ;
-					File f = new File(imDesc.getLocation());
+					File f = new File("playList/Videos/"+imDesc.getLocation());
 					System.out.println(imDesc.getLocation()+ "  " + f.length());
 				}else{
 					VideoDescription vidDesc = (VideoDescription) mandatoryMed.getDescription() ;
-					File f = new File(vidDesc.getLocation());
+					File f = new File("playList/Videos/"+vidDesc.getLocation());
 					man_list.add(vidDesc.getLocation());
 					System.out.println(vidDesc.getLocation() + "  " + f.length());
 				}
@@ -51,11 +55,11 @@ public class VideoGenTest1 {
 				OptionalMedia optionalMed = (OptionalMedia) m;
 				if (optionalMed.getDescription() instanceof ImageDescription){
 					ImageDescription imDesc = (ImageDescription) optionalMed.getDescription();
-					File f = new File(imDesc.getLocation());
+					File f = new File("playList/Videos/"+imDesc.getLocation());
 					System.out.println(imDesc.getLocation()+ "  " + f.length());
 				}else{
 					VideoDescription vidDesc = (VideoDescription) optionalMed.getDescription();
-					File f = new File(vidDesc.getLocation());
+					File f = new File("playList/Videos/"+vidDesc.getLocation());
 					op_list.add(vidDesc.getLocation());
 					System.out.println(vidDesc.getLocation() + "  " + f.length());
 				}
@@ -66,13 +70,13 @@ public class VideoGenTest1 {
 				for(MediaDescription mDesc : alternativesMed.getMedias()){
 					if (mDesc instanceof VideoDescription){
 						VideoDescription vidDesc = (VideoDescription) mDesc;
-						File f = new File(vidDesc.getLocation());
+						File f = new File("playList/Videos/"+vidDesc.getLocation());
 						alt_list.add(vidDesc.getLocation());
 						System.out.println(vidDesc.getLocation()+ "  " + f.length());
 					}
 					else{
 						ImageDescription imDesc =(ImageDescription) mDesc;
-						File f = new File(imDesc.getLocation());
+						File f = new File("playList/Videos/"+imDesc.getLocation());
 						System.out.println(imDesc.getLocation()+ "  " + f.length());
 					}
 				}
@@ -85,6 +89,13 @@ public class VideoGenTest1 {
 
 	}
 
+	/**
+	 * fonction auxiliaire pour calcul de toutes variantes possible
+	 * @param op liste de listes des videos Optional
+	 * @param alt liste des video Alternative 
+	 * @param man liste de videos Mandatory
+	 * @return la liste des listes de variantes possibles
+	 */
 	public List<List<String>> listVariants(List<List<String>> op, List<String> alt ,List<String> man) {
 		List<List<String>> op_man = new ArrayList<List<String>>();
 		for(List<String> listOpMan : op) {
@@ -110,6 +121,11 @@ public class VideoGenTest1 {
 		}
 		return op_man_alt;
 	}
+	/**
+	 * Calcule les combinaisons possibles des videos Optional
+	 * @param optList liste des videos Optional
+	 * @return la liste de liste de variantes possibles 
+	 */
 	public List<List<String>> allCombinations(List<String> optList) {
 		List<List<String>> finalList = new ArrayList<List<String>>();
 		// ajout de la combinaison vide
@@ -130,6 +146,11 @@ public class VideoGenTest1 {
 		return finalList;
 	}
 
+	/**
+	 * Crée une ligne "'file' video" dans le fichier variante.txt
+	 * @param name nom de la video
+	 * @param index index de la variante
+	 */
 	private void execEcho(String name, int index) {
 		String s;
 		Process p;
@@ -147,6 +168,11 @@ public class VideoGenTest1 {
 			p.destroy();
 		} catch (Exception e) {}
 	}
+	/**
+	 * Execute la commande FFMPEG
+	 * @param typeCommand type de la commande (image, video ou gif)
+	 * @param videoName le nom de la video
+	 */
 	private void execFFMPEG(String typeCommand, String videoName) {
 		String cmd ="";
 		switch(typeCommand){
@@ -176,6 +202,10 @@ public class VideoGenTest1 {
 		}
 	}
 
+	/**
+	 * @param dirName path vers un repertoire
+	 * @return un tableau de fichiers .txt qui se trouvent dans le repertoire
+	 */
 	public File[] finder( String dirName){
 		File dir = new File(dirName);
 
@@ -186,6 +216,9 @@ public class VideoGenTest1 {
 
 	}
 
+	/**
+	 * Fonction qui fait appel à la generation des videos, images et GIF 
+	 */
 	private void generateAllVideosImagesGifs() {
 		File [] playlists = finder("playList/variantes/");
 		for (File f : playlists) {
@@ -197,6 +230,10 @@ public class VideoGenTest1 {
 		}
 	}
 	
+	/**
+	 * Fonction qui fait appel à la génération des variantes (un fichier pas variante) 
+	 * et les videos, images et GIF
+	 */
 	private void generateData() {
 		int i = 0;
 		for (List<String> l : genVariantesFromVideoGeneratorModel() ) {
@@ -213,6 +250,9 @@ public class VideoGenTest1 {
 	
 	
 	
+	/**
+	 * main pour test
+	 */
 	public static void main(String[] args) throws InterruptedException {
 		VideoGenTest1 v = new VideoGenTest1();
 		v.generateData();
