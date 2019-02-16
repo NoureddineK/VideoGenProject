@@ -54,13 +54,6 @@ public class VideoGenTest1 {
 		for (Media m : medias) {
 			if (m instanceof MandatoryMedia) {
 				MandatoryMedia mandatoryMed = (MandatoryMedia) m;
-				if (mandatoryMed.getDescription() instanceof ImageDescription) {
-					ImageDescription imDesc = (ImageDescription) mandatoryMed.getDescription();
-					File f = new File(imDesc.getLocation());
-					System.out.println(imDesc.getLocation() + "  " + f.length());
-				} else {
-					VideoDescription vidDesc = (VideoDescription) mandatoryMed.getDescription();
-					File f = new File("playList/Videos/" + vidDesc.getLocation());
 				if(mandatoryMed.getDescription() instanceof ImageDescription){
 					ImageDescription imDesc = (ImageDescription) mandatoryMed.getDescription() ;
 					File f = new File("playList/Videos/"+imDesc.getLocation());
@@ -78,10 +71,6 @@ public class VideoGenTest1 {
 					ImageDescription imDesc = (ImageDescription) optionalMed.getDescription();
 					File f = new File(imDesc.getLocation());
 					System.out.println(imDesc.getLocation() + "  " + f.length());
-				} else {
-					VideoDescription vidDesc = (VideoDescription) optionalMed.getDescription();
-					File f = new File("playList/Videos/" + vidDesc.getLocation());
-					System.out.println(imDesc.getLocation()+ "  " + f.length());
 				}else{
 					VideoDescription vidDesc = (VideoDescription) optionalMed.getDescription();
 					File f = new File("playList/Videos/"+vidDesc.getLocation());
@@ -99,13 +88,6 @@ public class VideoGenTest1 {
 						alt_list.add(vidDesc.getLocation());
 						videoInfo.put(vidDesc.getLocation(), vidDesc.getDuration());
 						System.out.println(vidDesc.getLocation() + "  " + f.length());
-					} else {
-						ImageDescription imDesc = (ImageDescription) mDesc;
-						File f = new File(imDesc.getLocation());
-						System.out.println(imDesc.getLocation() + "  " + f.length());
-						File f = new File("playList/Videos/"+vidDesc.getLocation());
-						alt_list.add(vidDesc.getLocation());
-						System.out.println(vidDesc.getLocation()+ "  " + f.length());
 					}
 					else{
 						ImageDescription imDesc =(ImageDescription) mDesc;
@@ -153,6 +135,7 @@ public class VideoGenTest1 {
 			i_op_man++;
 		}
 		return op_man_alt;
+	}
 
 	/**
 	 * Calcule les combinaisons possibles des videos Optional

@@ -1,0 +1,7 @@
+ ,mandatory2.mp4,mandatory1.mp4,alter3.mp4,optional.mp4,alter1.mp4,alter2.mp4,
+variante3,True,True,True,False,False,False,
+variante2,True,True,False,False,False,True,
+variante1,True,True,False,False,True,False,
+variante6,True,True,True,True,False,False,
+variante5,True,True,False,True,False,True,
+variante4,True,True,False,True,True,False,
