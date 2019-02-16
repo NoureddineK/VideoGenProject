@@ -1,8 +1,11 @@
 import static org.junit.Assert.*;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.emf.common.util.URI;
@@ -19,10 +22,15 @@ import fr.istic.videoGen.VideoGeneratorModel;
 public class VideoGenTest1 {
 
 
-	public void testInJava1() {
+	public List<List<String>> genVariantesFromVideoGeneratorModel() {
 
-		VideoGeneratorModel videoGen = new VideoGenHelper().loadVideoGenerator(URI.createURI("specifications.videogen"));
+		VideoGeneratorModel videoGen = new VideoGenHelper().loadVideoGenerator(URI.createURI("example1.videogen"));
 		assertNotNull(videoGen);
+
+		List<String> op_list = new ArrayList<>();
+		List<String> man_list = new ArrayList<>();
+		List<String> alt_list = new ArrayList<>();
+		List<List<String>> op_man_alt_list = new ArrayList<List<String>>();
 
 		List<Media> medias = (videoGen.getMedias());
 		for (Media m : medias ){
@@ -35,6 +43,7 @@ public class VideoGenTest1 {
 				}else{
 					VideoDescription vidDesc = (VideoDescription) mandatoryMed.getDescription() ;
 					File f = new File(vidDesc.getLocation());
+					man_list.add(vidDesc.getLocation());
 					System.out.println(vidDesc.getLocation() + "  " + f.length());
 				}
 			}
@@ -47,6 +56,7 @@ public class VideoGenTest1 {
 				}else{
 					VideoDescription vidDesc = (VideoDescription) optionalMed.getDescription();
 					File f = new File(vidDesc.getLocation());
+					op_list.add(vidDesc.getLocation());
 					System.out.println(vidDesc.getLocation() + "  " + f.length());
 				}
 
@@ -57,6 +67,7 @@ public class VideoGenTest1 {
 					if (mDesc instanceof VideoDescription){
 						VideoDescription vidDesc = (VideoDescription) mDesc;
 						File f = new File(vidDesc.getLocation());
+						alt_list.add(vidDesc.getLocation());
 						System.out.println(vidDesc.getLocation()+ "  " + f.length());
 					}
 					else{
@@ -67,6 +78,10 @@ public class VideoGenTest1 {
 				}
 			}
 		}
+
+		List<List<String>> combin_op_list = allCombinations(op_list);
+		op_man_alt_list = listVariants(combin_op_list,alt_list,man_list);
+		return op_man_alt_list;
 
 	}
 
@@ -115,30 +130,96 @@ public class VideoGenTest1 {
 		return finalList;
 	}
 
-	public void testList() {
-		List<String> optList = new ArrayList<String>();
-		optList.add("A");
-		optList.add("B");
-		optList.add("C");
-		optList.add("D");
-		List<List<String>> list =	allCombinations(optList);
-		System.out.println(list.size());
+	private void execEcho(String name, int index) {
+		String s;
+		Process p;
+		try {
+
+			String [] commands = { "bash", "-c", "echo \"file " + "\'$PWD/playList/Videos/" + name + "\'"+ "\" >> playList/variantes/variante" + index + ".txt" };
+			p = Runtime.getRuntime().exec(commands);
+
+			BufferedReader br = new BufferedReader(
+					new InputStreamReader(p.getInputStream()));
+			while ((s = br.readLine()) != null)
+				System.out.println("line: " + s);
+			p.waitFor();
+			//System.out.println ("exit echo: " + p.exitValue());
+			p.destroy();
+		} catch (Exception e) {}
+	}
+	private void execFFMPEG(String typeCommand, String videoName) {
+		String cmd ="";
+		switch(typeCommand){
+		case "video":
+			cmd = "ffmpeg -safe 0 -f concat -segment_time_metadata 1 -i playList/variantes/"+videoName+".txt -vf select=concatdec_select -af aselect=concatdec_select,aresample=async=1 playList/VideosGenerated/"+videoName+".mp4";
+			break;
+		case "image":
+			cmd = "ffmpeg -y -i playList/VideosGenerated/"+videoName+".mp4 -r 1 -t 00:00:03 -ss 00:00:03 -f image2 playList/Images/"+ videoName+".png";
+			break;
+		case "gif":
+			cmd = "ffmpeg -ss 3.0 -t 7.0 -i playList/VideosGenerated/"+videoName+".mp4 -f gif playList/Gif/"+videoName+".gif";
+			break;
+		default:
+			throw new IllegalArgumentException("Type of command must be : video, image or gif");
+		}
+		try {
+			System.out.println(cmd);
+			String[] a = new String[] {"/bin/sh", "-c", cmd};
+			Process p = Runtime.getRuntime().exec(a);
+			p.waitFor();
+			//System.out.println ("exit execFFMPEG: " + p.exitValue());
+			p.destroy();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
 	}
 
-	public static void main(String[] args) {
+	public File[] finder( String dirName){
+		File dir = new File(dirName);
 
+		return dir.listFiles(new FilenameFilter() { 
+			public boolean accept(File dir, String filename)
+			{ return filename.endsWith(".txt"); }
+		} );
 
-		VideoGenTest1 v = new VideoGenTest1();
-		List<String> man = Arrays.asList("man1", "man2", "man3");
-		List<String> alt = Arrays.asList("alt1", "alt2", "alt3");
-		List<String> op = Arrays.asList("op1","op2");
-		List<List<String>> op_combinaisons = v.allCombinations(op);
-		for (List<String> l : v.listVariants(op_combinaisons, alt, man) )
+	}
+
+	private void generateAllVideosImagesGifs() {
+		File [] playlists = finder("playList/variantes/");
+		for (File f : playlists) {
+			String nameFile = f.getName().split("\\.(?=[^\\.]+$)")[0];
+			//System.out.println("-----------------Exec FFMEG : "+nameFile+" --------------");
+			execFFMPEG("video", nameFile);
+			execFFMPEG("image", nameFile);
+			execFFMPEG("gif", nameFile);
+		}
+	}
+	
+	private void generateData() {
+		int i = 0;
+		for (List<String> l : genVariantesFromVideoGeneratorModel() ) {
+			i++;
+
 			System.out.println(l);
+
+			for(String video : l) {
+				execEcho(video, i);
+			}
+		}
+		generateAllVideosImagesGifs();
 	}
-    
 	
 	
+	
+	public static void main(String[] args) throws InterruptedException {
+		VideoGenTest1 v = new VideoGenTest1();
+		v.generateData();
+	}
+
+
+
 }
 
 
